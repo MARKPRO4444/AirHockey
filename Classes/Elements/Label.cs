@@ -26,7 +26,7 @@ namespace AirHockey.Classes.Elements
 			set { text = value; }
 		}
 
-		public Label(Color color, Vector2 position, string text)
+		public Label(string text, Vector2 position, Color color)
 		{
 			this.color = color;
 			this.position = position;

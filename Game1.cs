@@ -12,12 +12,15 @@ public class Game1 : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
 
+    public static GameMode gameMode = GameMode.Play;
+
     Player1 player1;
     Player2 player2;
     Gate1 gate1;
     Ball ball;
     Gate2 gate2;
-    Label lblScore = new Label(Color.Black, new Vector2(380, 0), "0:0");
+    Label lblScore = new Label("0:0", new Vector2(350, 0), Color.Brown);
+    ScreenEnd screenEnd;
 
     public Game1()
     {
@@ -37,6 +40,7 @@ public class Game1 : Game
         gate1 = new Gate1();
         ball = new Ball();
         gate2 = new Gate2();
+        screenEnd = new ScreenEnd();
 
         base.Initialize();
     }
@@ -51,6 +55,7 @@ public class Game1 : Game
         gate1.LoadContent(Content);
         gate2.LoadContent(Content);
         ball.LoadContent(Content);
+        screenEnd.LoadContent(Content);
         lblScore.LoadContent(Content);
     }
 
@@ -60,13 +65,22 @@ public class Game1 : Game
             Exit();
 
         // TODO: Add your update logic here
-        player1.Update();
-        player2.Update();
-        gate1.Update();
-        gate2.Update();
-        ball.Update();
-        UpdateCollision();
-        UpdateScore();
+        switch(gameMode)
+        {
+            case GameMode.Play:
+                player1.Update();
+                player2.Update();
+                gate1.Update();
+                gate2.Update();
+                ball.Update();
+                UpdateCollision();
+                UpdateScore();
+                End();
+                break;
+            case GameMode.End:
+                screenEnd.Update();
+                break;
+        }
 
         base.Update(gameTime);
     }
@@ -78,12 +92,20 @@ public class Game1 : Game
         // TODO: Add your drawing code here
         _spriteBatch.Begin();
 
-        player1.Draw(_spriteBatch);
-        player2.Draw(_spriteBatch);
-        gate1.Draw(_spriteBatch);
-        gate2.Draw(_spriteBatch);
-        ball.Draw(_spriteBatch);
-        lblScore.Draw(_spriteBatch);
+        switch (gameMode)
+        {
+            case GameMode.Play:
+                player1.Draw(_spriteBatch);
+                player2.Draw(_spriteBatch);
+                gate1.Draw(_spriteBatch);
+                gate2.Draw(_spriteBatch);
+                ball.Draw(_spriteBatch);
+                lblScore.Draw(_spriteBatch);
+                break;
+            case GameMode.End:
+                screenEnd.Draw(_spriteBatch);
+                break;
+        }
 
         _spriteBatch.End();
 
@@ -96,13 +118,11 @@ public class Game1 : Game
         {
             player2.Score++;
             ball.Position = new Vector2(330, 220);
-            Thread.Sleep(2000);
         }
         if (ball.Collision.Intersects(gate2.Collision))
         {
             player1.Score++;
             ball.Position = new Vector2(330, 220);
-            Thread.Sleep(2000);
         }
 
         if(player1.Collision.Intersects(ball.Collision))
@@ -117,7 +137,25 @@ public class Game1 : Game
 
     public void UpdateScore()
     {
-        lblScore.Text = player1.Score + ":" + player2.Score;
+        screenEnd.UpdateUI(player1.Score.ToString()+":"+(player2.Score-1).ToString(), 0, 0);
+        lblScore.Text = player1.Score + ":" + (player2.Score-1);
+    }
+
+    public void End()
+    {
+        if (player1.Score == 5 || player1.Score == 5)
+        {
+            if (player1.Score >= 5)
+            {
+                System.Console.WriteLine("Player1 Wiin!!");
+            }
+            else if (player2.Score >= 5)
+            {
+                System.Console.WriteLine("Player2 Wiin!!");
+            }
+            gameMode = GameMode.End;
+            System.Console.WriteLine("The End :(");
+        }
     }
 }
 
