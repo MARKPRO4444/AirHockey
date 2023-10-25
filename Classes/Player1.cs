@@ -20,7 +20,7 @@ namespace AirHockey.Classes
         private float speedY;
         private Rectangle collision;
         private int score = 0;
-
+        private Rectangle destinationRectangle;
         private Rectangle sourceRectangle;
 
         public Texture2D Texture
@@ -62,7 +62,7 @@ namespace AirHockey.Classes
         public Player1()
         {
             sourceRectangle = new Rectangle(numFrame * 144, 0, 144, 100);
-            position = new Vector2(100, 100);
+            position = new Vector2(30, 150);
             stateVelocity = new Vector2(-5, -5);
 
             speedX = 0;
@@ -104,22 +104,24 @@ namespace AirHockey.Classes
             {
                 position.Y = 0;
             }
-            if (position.X + texture.Width > 800)
+            if (position.X + 20 > 800)
             {
-                position.X = 800 - texture.Width;
+                position.X = 800 - 20;
             }
-            if (position.Y + texture.Height > 600)
+            if (position.Y + 80 > 480)
             {
-                position.Y = 600 - texture.Height;
+                position.Y = 480 - 80;
             }
 
             collision = new Rectangle((int)position.X, (int)position.Y,
-                texture.Width, texture.Height);
+                20, 80);
+            destinationRectangle = new Rectangle((int)position.X, (int)position.Y,
+                20, 80);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, position, Color.White);
+            spriteBatch.Draw(texture, destinationRectangle, Color.White);
         }
     }
 }
